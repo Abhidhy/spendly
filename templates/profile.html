@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="profile-inner">
+
+        <!-- User info -->
+        <div class="profile-header">
+            <div class="profile-avatar">{{ user.name[0] | upper }}</div>
+            <div class="profile-meta">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-since">Member since {{ user.member_since }}</p>
+            </div>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <span class="stats-label">Total spent</span>
+                <span class="stats-value">₹{{ "%.2f"|format(stats.total_spent) }}</span>
+            </div>
+            <div class="stats-card">
+                <span class="stats-label">Transactions</span>
+                <span class="stats-value">{{ stats.transaction_count }}</span>
+            </div>
+            <div class="stats-card">
+                <span class="stats-label">Top category</span>
+                <span class="stats-value">{{ stats.top_category }}</span>
+            </div>
+        </div>
+
+        <div class="profile-columns">
+
+            <!-- Transaction history -->
+            <div class="profile-col">
+                <h2 class="profile-section-title">Recent transactions</h2>
+                {% if transactions %}
+                <div class="transaction-list">
+                    {% for tx in transactions %}
+                    <div class="transaction-row">
+                        <div class="tx-left">
+                            <span class="tx-desc">{{ tx.description or "—" }}</span>
+                            <span class="tx-meta">{{ tx.category }} · {{ tx.date }}</span>
+                        </div>
+                        <span class="tx-amount">₹{{ "%.2f"|format(tx.amount) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="profile-empty">No transactions yet.</p>
+                {% endif %}
+            </div>
+
+            <!-- Category breakdown -->
+            <div class="profile-col">
+                <h2 class="profile-section-title">By category</h2>
+                {% if categories %}
+                <div class="category-list">
+                    {% for cat in categories %}
+                    <div class="category-item">
+                        <div class="category-header">
+                            <span class="category-name">{{ cat.name }}</span>
+                            <span class="category-amt">₹{{ "%.2f"|format(cat.amount) }} · {{ cat.pct }}%</span>
+                        </div>
+                        <div class="mock-bar-track">
+                            <div class="mock-bar" style="width: {{ cat.pct }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="profile-empty">No data yet.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="profile-actions">
+            <a href="{{ url_for('add_expense') }}" class="btn-primary">Add expense</a>
+            <a href="{{ url_for('logout') }}" class="btn-ghost">Sign out</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

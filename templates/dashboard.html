@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Spendly{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="dashboard-inner">
+
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <p class="dashboard-subtitle">Top spending categories · last 6 months</p>
+        </div>
+
+        {% if top_categories %}
+        <div class="dash-category-list">
+            {% for cat in top_categories %}
+            <div class="dash-category-card">
+                <div class="dash-cat-rank">#{{ loop.index }}</div>
+                <div class="dash-cat-body">
+                    <div class="dash-cat-header">
+                        <span class="dash-cat-name">{{ cat.name }}</span>
+                        <span class="dash-cat-amt">₹{{ "%.2f"|format(cat.amount) }}</span>
+                    </div>
+                    <div class="mock-bar-track">
+                        <div class="mock-bar{% if loop.index == 2 %} mock-bar-2{% elif loop.index == 3 %} mock-bar-3{% endif %}"
+                             style="width: {{ cat.pct }}%"></div>
+                    </div>
+                    <span class="dash-cat-pct">{{ cat.pct }}% of top-3 spend</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="dashboard-empty">No expenses recorded in the last 6 months.</p>
+        {% endif %}
+
+        <div class="dashboard-actions">
+            <a href="{{ url_for('profile') }}" class="btn-ghost">View full profile</a>
+            <a href="{{ url_for('add_expense') }}" class="btn-primary">Add expense</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
